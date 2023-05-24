@@ -1,6 +1,16 @@
 document.querySelectorAll(".drop-zone__input").forEach(inputelement => {
     const dropZoneElement = inputelement.closest(".drop-zone");
 
+    dropZoneElement.addEventListener("click" , e =>{
+        inputelement.click();
+    });
+
+    inputelement.addEventListener("change" , e =>{
+        if(inputelement.files.length){
+            updatethumbnail(dropZoneElement , inputelement.files[0]);
+        }
+    });
+
     dropZoneElement.addEventListener("dragover" , e => {
         e.preventDefault();
         dropZoneElement.classList.add("drop-zone--over");
@@ -40,4 +50,15 @@ function updatethumbnail (dropZoneElement , file){
     }
 
     thumbnailElement.dataset.label = file.name;
+
+    if(file.type.startsWith("image/")){
+        const reader = new FileReader();
+
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            thumbnailElement.style.backgroundImage = `url('${reader.result}')`
+        }
+    } else{
+        thumbnailElement.style.backgroundImage = null;
+    }
 }
